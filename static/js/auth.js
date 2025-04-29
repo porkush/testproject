@@ -1,23 +1,18 @@
-// Authentication related functionality
 
-// Check if user is authenticated
 function isAuthenticated() {
     return localStorage.getItem('access_token') !== null;
 }
 
-// Get the current user ID
 function getCurrentUserId() {
     const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
     return userData.id;
 }
 
-// Get the current username
 function getCurrentUsername() {
     const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
     return userData.username;
 }
 
-// Update the navigation based on authentication status
 function updateAuthNav() {
     const authNav = document.getElementById('auth-nav');
     if (!authNav) return;
@@ -39,7 +34,6 @@ function updateAuthNav() {
             </li>
         `;
         
-        // Add logout event listener
         document.getElementById('logout-btn').addEventListener('click', (e) => {
             e.preventDefault();
             logout();
@@ -56,7 +50,6 @@ function updateAuthNav() {
     }
 }
 
-// Handle login form submission
 function setupLoginForm() {
     const loginForm = document.getElementById('login-form');
     if (!loginForm) return;
@@ -83,18 +76,15 @@ function setupLoginForm() {
             
             const data = await response.json();
             
-            // Store tokens and user data
             localStorage.setItem('access_token', data.access);
             localStorage.setItem('refresh_token', data.refresh);
             
-            // Store basic user info
             const userData = {
                 username: username,
                 id: parseJwt(data.access).user_id
             };
             localStorage.setItem('user_data', JSON.stringify(userData));
             
-            // Show success message and redirect
             showAlert('Login successful!', 'success');
             setTimeout(() => {
                 window.location.href = '/';
@@ -104,8 +94,6 @@ function setupLoginForm() {
         }
     });
 }
-
-// Handle registration form submission
 function setupRegisterForm() {
     const registerForm = document.getElementById('register-form');
     if (!registerForm) return;
@@ -146,7 +134,6 @@ function setupRegisterForm() {
     });
 }
 
-// Logout function
 function logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
@@ -158,7 +145,6 @@ function logout() {
     }, 1000);
 }
 
-// Parse JWT token to get user information
 function parseJwt(token) {
     try {
         const base64Url = token.split('.')[1];
@@ -174,7 +160,6 @@ function parseJwt(token) {
     }
 }
 
-// Show alert message
 function showAlert(message, type = 'info') {
     const alertContainer = document.getElementById('alert-container');
     if (!alertContainer) return;
@@ -188,7 +173,6 @@ function showAlert(message, type = 'info') {
     
     alertContainer.appendChild(alertElement);
     
-    // Auto-dismiss after 5 seconds
     setTimeout(() => {
         alertElement.classList.remove('show');
         setTimeout(() => {
@@ -197,7 +181,6 @@ function showAlert(message, type = 'info') {
     }, 5000);
 }
 
-// Check if user is authenticated for protected pages
 function checkAuth() {
     const protectedPages = ['/my-events', '/create-event'];
     const currentPath = window.location.pathname;
@@ -208,7 +191,6 @@ function checkAuth() {
     }
 }
 
-// Initialize auth functionality
 document.addEventListener('DOMContentLoaded', () => {
     updateAuthNav();
     setupLoginForm();
